@@ -9,7 +9,6 @@ Dollar-based limits, live cost tracking, and plan cap reporting.
 <br>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/my-pi-clinepass"><img src="https://img.shields.io/badge/npm-my--pi--clinepass-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="npm package"></a>
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-7.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript 7"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-%3E%3D22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="License MIT"></a>
