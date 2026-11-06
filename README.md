@@ -15,6 +15,10 @@ Dollar-based limits, live cost tracking, and plan cap reporting.
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="License MIT"></a>
 </p>
 
+<br>
+
+<img src="https://raw.githubusercontent.com/fifidayone/pi-clinepass/main/assets/status.png" alt="pi-clinepass status meter" width="680">
+
 </div>
 
 <br>
@@ -59,6 +63,14 @@ Run the login command inside pi:
 
 Select **ClinePass** to choose your sign-in method:
 
+<br>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/fifidayone/pi-clinepass/main/assets/login.png" alt="ClinePass login menu" width="620">
+</div>
+
+<br>
+
 - **Use existing sign-in (Cline CLI)**: keep using your Cline CLI account
 - **Sign in with browser**: log in once in your browser
 - **Enter API key**: paste your ClinePass key
@@ -84,6 +96,10 @@ View the live rate sheet and plan limit utilization anytime:
 The command opens a menu: the dashboard shows model rates and plan utilization
 in a centered modal, or run **price calibration** to measure real gateway
 billing and update the whole panel (uses ~5-10% of the 5-hour quota).
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/fifidayone/pi-clinepass/main/assets/report.png" alt="ClinePass report with pricing and plan limits" width="620">
+</div>
 
 ---
 
