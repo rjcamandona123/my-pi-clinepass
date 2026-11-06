@@ -1,6 +1,6 @@
 <div align="center">
 
-# pi-clinepass
+# my-pi-clinepass
 
 **ClinePass for [pi](https://pi.dev) coding agent**
 
@@ -9,15 +9,11 @@ Dollar-based limits, live cost tracking, and plan cap reporting.
 <br>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/pi-clinepass"><img src="https://img.shields.io/badge/npm-pi--clinepass-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="npm package"></a>
+  <a href="https://www.npmjs.com/package/my-pi-clinepass"><img src="https://img.shields.io/badge/npm-my--pi--clinepass-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="npm package"></a>
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-7.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript 7"></a>
-  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-%3E%3D22.19-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="MIT License"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-%3E%3D22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="License MIT"></a>
 </p>
-
-<br>
-
-<img src="https://raw.githubusercontent.com/fifidayone/pi-clinepass/main/assets/status.png" alt="pi-clinepass status meter" width="680">
 
 </div>
 
@@ -35,10 +31,18 @@ Dollar-based limits, live cost tracking, and plan cap reporting.
 
 ## Installation
 
-Requires **Node.js 22.19+** and [pi](https://pi.dev).
+Requires **Node.js 22+** and [pi](https://pi.dev).
+
+From npm:
 
 ```sh
-pi install npm:pi-clinepass
+pi install npm:my-pi-clinepass
+```
+
+From GitHub:
+
+```sh
+pi install git:github.com/rjcamandona123/my-pi-clinepass
 ```
 
 ---
@@ -54,14 +58,6 @@ Run the login command inside pi:
 ```
 
 Select **ClinePass** to choose your sign-in method:
-
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/fifidayone/pi-clinepass/main/assets/login.png" alt="ClinePass login menu" width="620">
-</div>
-
-<br>
 
 - **Use existing sign-in (Cline CLI)**: keep using your Cline CLI account
 - **Sign in with browser**: log in once in your browser
@@ -89,17 +85,13 @@ The command opens a menu: the dashboard shows model rates and plan utilization
 in a centered modal, or run **price calibration** to measure real gateway
 billing and update the whole panel (uses ~5-10% of the 5-hour quota).
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/fifidayone/pi-clinepass/main/assets/report.png" alt="ClinePass report with pricing and plan limits" width="620">
-</div>
-
 ---
 
 ## Development
 
 ```sh
-git clone https://github.com/fifidayone/pi-clinepass.git
-cd pi-clinepass
+git clone https://github.com/rjcamandona123/my-pi-clinepass.git
+cd my-pi-clinepass
 npm install
 npm test
 npm run typecheck
@@ -107,16 +99,6 @@ npm run typecheck
 
 ---
 
-## Support
-
-pi-clinepass is free and will stay free. If you'd like to help, consider buying me a coffee:
-
-<p align="left">
-  <a href="https://www.paypal.com/paypalme/fifidayone"><img src="https://img.shields.io/badge/PayPal-fifidayone-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Support via PayPal"></a>
-</p>
-
----
-
 ## License
 
-[MIT](LICENSE) © 2026 fifidayone
+[MIT](LICENSE) © 2026 rjcamandona123
