@@ -47,7 +47,7 @@ export function normalizeThinkingText(text: string): string {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-const CLINEPASS_PROVIDERS = new Set(["clinepass", "cline-pass"]);
+const CLINEPASS_PROVIDERS = new Set(["clinepass", "cline-pass", "cline-free"]);
 
 /**
  * Repair a message_end event's assistant thinking and return the

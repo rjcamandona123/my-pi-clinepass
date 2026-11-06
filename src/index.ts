@@ -14,7 +14,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { isFreeModel, MODELS } from "./catalog.js";
+import { isFreeModel, MODELS, FREE_MODELS } from "./catalog.js";
 import { DEFAULT_API_BASE, WORKOS_TOKEN_PREFIX } from "./workos.js";
 import { clinePassStreamSimple } from "./clinepass-stream.js";
 import { streamSimple as openaiStreamSimple } from "@earendil-works/pi-ai/api/openai-completions";
@@ -98,8 +98,38 @@ function providerConfig() {
   };
 }
 
+/** Free-tier provider config — the rotating Cline free models. */
+function freeProviderConfig() {
+  return {
+    name: "Cline Free",
+    baseUrl: `${DEFAULT_API_BASE}/api/v1`,
+    authHeader: true,
+    api: "openai-completions" as const,
+    oauth: {
+      name: "ClinePass",
+      isSubscription: true,
+      login,
+      refreshToken,
+      getApiKey,
+    },
+    streamSimple: openaiStreamSimple,
+    models: FREE_MODELS.map((m) => ({
+      ...m,
+      input: [...m.input],
+      cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    })),
+    refreshModels: async () =>
+      FREE_MODELS.map((m) => ({
+        ...m,
+        input: [...m.input],
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+      })),
+  };
+}
+
 export default async function (pi: ExtensionAPI) {
   pi.registerProvider(PROVIDER_NAME, providerConfig());
+  pi.registerProvider("cline-free", freeProviderConfig());
 
   // Persist the per-turn server bill as a custom session entry so the
   // session total survives resume/fork, then surface it in the status meter.
@@ -142,7 +172,7 @@ export default async function (pi: ExtensionAPI) {
     // Persist the global default only for explicit selections of our models:
     // model cycling (Ctrl+P) and old-session restores must not rewrite the
     // user's global default, and other providers manage their own settings.
-    if (event.source === "set" && (provider === PROVIDER_NAME || provider === "cline-pass")) {
+    if (event.source === "set" && (provider === PROVIDER_NAME || provider === "cline-pass" || provider === "cline-free")) {
       void savePiDefaultModel(provider, modelId);
     }
     void handleInitialMeter(ctx);

@@ -173,7 +173,7 @@ export function handleClinePassError(
   if (msg.stopReason !== "error" || !msg.errorMessage) return;
 
   const provider = msg.provider ?? ctx.model?.provider;
-  if (provider !== "clinepass" && provider !== "cline-pass") return;
+  if (provider !== "clinepass" && provider !== "cline-pass" && provider !== "cline-free") return;
 
   const { type, message: friendly } = classifyClinePassError(msg.errorMessage, msg.model);
   if (type === "account_deleted") {

@@ -80,6 +80,17 @@ const MAX_HIGH_LOW_MANDATORY: ThinkingLevelMap = {
   max: "max",
 };
 
+/** Free-tier thinking map (off/low/medium/high/xhigh; no minimal, no max). */
+const FREE_THINKING: ThinkingLevelMap = {
+  off: "none",
+  minimal: null,
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: null,
+};
+
 /** Only xhigh/high + off. Used for glm-5.2. */
 const XHIGH_HIGH: ThinkingLevelMap = {
   off: "none",
@@ -178,6 +189,14 @@ export const MODELS: readonly ClinePassModel[] = [
   model("cline-pass/qwen3.7-plus", "Qwen3.7 Plus", [0.67, 2.67, 0.07], 921_600, 131_072, ["text", "image"], ALL_THINKING),
 ];
 
+/** Cline free-tier models (rotating; no subscription required). */
+export const FREE_MODELS: readonly ClinePassModel[] = [
+  model("reflection/beam-free", "Beam 1.0 (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("cline-free/nemotron-3.5-super-vl", "Nemotron 3.5 Super VL (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("nvidia/nemotron-3.5-lightning-free", "Nemotron 3.5 Lightning (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("cline-free/solar-mini4", "Solar Mini 4 (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+];
+
 export function modelIds(): string[] {
   return MODELS.map((m) => m.id);
 }
@@ -186,5 +205,8 @@ export function modelIds(): string[] {
  * (cost 0), so adding a free model never needs a second edit here. */
 export function isFreeModel(id: string): boolean {
   const normalized = id.startsWith("clinepass/") ? id.slice(10) : id;
-  return MODELS.some((m) => m.id === normalized && m.cost.input === 0);
+  return (
+    MODELS.some((m) => m.id === normalized && m.cost.input === 0) ||
+    FREE_MODELS.some((m) => m.id === normalized)
+  );
 }
