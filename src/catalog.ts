@@ -187,6 +187,11 @@ export const MODELS: readonly ClinePassModel[] = [
   model("cline-pass/qwen3.8-max", "Qwen3.8 Max", [2.75, 8.25, 0.34], 921_600, 131_072, ["text", "image"], XHIGH_MEDIUM_LOW),
   model("cline-pass/qwen3.7-max", "Qwen3.7 Max", [4.17, 12.5, 0.83], 921_600, 131_072, ["text"], ALL_THINKING),
   model("cline-pass/qwen3.7-plus", "Qwen3.7 Plus", [0.67, 2.67, 0.07], 921_600, 131_072, ["text", "image"], ALL_THINKING),
+  // ── Cline free-tier models (no subscription required) ──────────────────
+  model("reflection/beam-free", "Beam 1.0 (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("cline-free/nemotron-3.5-super-vl", "Nemotron 3.5 Super VL (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("nvidia/nemotron-3.5-lightning-free", "Nemotron 3.5 Lightning (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("cline-free/solar-mini4", "Solar Mini 4 (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
 ];
 
 /** Cline free-tier models (rotating; no subscription required). */
