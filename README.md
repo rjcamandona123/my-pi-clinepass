@@ -37,17 +37,13 @@ Dollar-based limits, live cost tracking, and plan cap reporting.
 
 Requires **Node.js 22+** and [pi](https://pi.dev).
 
-From npm:
-
-```sh
-pi install npm:my-pi-clinepass
-```
-
 From GitHub:
 
 ```sh
 pi install git:github.com/rjcamandona123/my-pi-clinepass
 ```
+
+> npm publication coming soon.
 
 ---
 
