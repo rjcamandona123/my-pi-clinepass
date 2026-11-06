@@ -1,0 +1,212 @@
+/**
+ * ClinePass static model catalog.
+ *
+ * Prices are the measured billing rates from the Cline `/usages` API
+ * (verified against real usage), not the published reference table which
+ * drifts from actual billing. `cacheWrite` is kept at 0: pi's cost model
+ * requires the field, but we do not display or track cache-write pricing.
+ *
+ * Context is capped to 921,600 for models whose gateway reports ~1M
+ * (pool max, not single-node) to leave headroom; max output is capped to
+ * 131,072. Models under 1M keep their tested values.
+ */
+
+export type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
+
+export type ThinkingLevelMap = Readonly<Record<ThinkingLevel, string | null>>;
+
+export interface ClinePassModel {
+  id: string;
+  name: string;
+  reasoning: boolean;
+  input: readonly ("text" | "image")[];
+  cost: {
+    input: number;
+    output: number;
+    cacheRead: number;
+    cacheWrite: number;
+  };
+  contextWindow: number;
+  maxTokens: number;
+  thinkingLevelMap: ThinkingLevelMap;
+  compat: {
+    supportsDeveloperRole: false;
+    cacheControlFormat: "anthropic";
+    supportsLongCacheRetention: false;
+  };
+}
+
+/** All 7 levels supported (off → "none"). Used when `supportedEfforts: null` + mandatory false. */
+const ALL_THINKING: ThinkingLevelMap = {
+  off: "none",
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max",
+};
+
+/** All levels except off (mandatory reasoning). Used when `mandatory: true` + `supportedEfforts: null`. */
+const ALL_MANDATORY: ThinkingLevelMap = {
+  off: null,
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max",
+};
+
+/** Only max/high/low + off. Used for deepseek, glm-5.3, kimi-k3, free models. */
+const MAX_HIGH_LOW: ThinkingLevelMap = {
+  off: "none",
+  minimal: null,
+  low: "low",
+  medium: null,
+  high: "high",
+  xhigh: null,
+  max: "max",
+};
+
+/** Max/high/low but off not allowed (mandatory). */
+const MAX_HIGH_LOW_MANDATORY: ThinkingLevelMap = {
+  off: null,
+  minimal: null,
+  low: "low",
+  medium: null,
+  high: "high",
+  xhigh: null,
+  max: "max",
+};
+
+/** Free-tier thinking map (off/low/medium/high/xhigh; no minimal, no max). */
+const FREE_THINKING: ThinkingLevelMap = {
+  off: "none",
+  minimal: null,
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: null,
+};
+
+/** Only xhigh/high + off. Used for glm-5.2. */
+const XHIGH_HIGH: ThinkingLevelMap = {
+  off: "none",
+  minimal: null,
+  low: null,
+  medium: null,
+  high: "high",
+  xhigh: "xhigh",
+  max: null,
+};
+
+/** xhigh/medium/low + off. Used for qwen3.8-max. */
+const XHIGH_MEDIUM_LOW: ThinkingLevelMap = {
+  off: "none",
+  minimal: null,
+  low: "low",
+  medium: "medium",
+  high: null,
+  xhigh: "xhigh",
+  max: null,
+};
+
+/** Only off/medium/high. Used for solar-pro4. */
+const OFF_MEDIUM_HIGH: ThinkingLevelMap = {
+  off: "none",
+  minimal: null,
+  low: null,
+  medium: "medium",
+  high: "high",
+  xhigh: null,
+  max: null,
+};
+
+/** minimal..xhigh, mandatory (no off, no max). Used for muse-spark contributor. */
+const MANDATORY_NO_MAX: ThinkingLevelMap = {
+  off: null,
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: null,
+};
+
+/**
+ * ClinePass rejects the `developer` role; the API caps at `max_tokens` /
+ * `max_completion_tokens` with reasoning excluded from the completion cap,
+ * so pi's default `max_completion_tokens` is correct and left unset.
+ * `cacheControlFormat: "anthropic"` makes pi send `{type:"ephemeral"}`
+ * (no ttl) — verified to engage real caching on ClinePass.
+ * `supportsLongCacheRetention: false` keeps ttl from ever being sent
+ * (ttl causes HTTP 500).
+ */
+const COMPAT = {
+  supportsDeveloperRole: false as const,
+  cacheControlFormat: "anthropic" as const,
+  supportsLongCacheRetention: false as const,
+};
+
+function model(
+  id: string,
+  name: string,
+  cost: [input: number, output: number, cacheRead: number],
+  contextWindow: number,
+  maxTokens: number,
+  input: readonly ("text" | "image")[] = ["text"],
+  thinkingLevelMap: ThinkingLevelMap = ALL_THINKING,
+): ClinePassModel {
+  return {
+    id,
+    name,
+    reasoning: true,
+    input,
+    cost: { input: cost[0], output: cost[1], cacheRead: cost[2], cacheWrite: 0 },
+    contextWindow,
+    maxTokens,
+    thinkingLevelMap,
+    compat: COMPAT,
+  };
+}
+
+/** Measured prices ($/1M tokens: input/output/cacheRead) — latest verified. */
+export const MODELS: readonly ClinePassModel[] = [
+  // ── ClinePass models (measured billing prices) ─────────────────────────
+  model("cline-pass/glm-5.3", "GLM-5.3", [1.4, 4.4, 0.26], 921_600, 131_072, ["text"], MAX_HIGH_LOW_MANDATORY),
+  model("cline-pass/glm-5.3-flash", "GLM-5.3 Flash", [0.15, 0.5, 0.03], 921_600, 131_072, ["text", "image"], MAX_HIGH_LOW_MANDATORY),
+  model("cline-pass/kimi-k3", "Kimi K3", [6.0, 30.0, 0.6], 921_600, 131_072, ["text", "image"], MAX_HIGH_LOW),
+  model("cline-pass/deepseek-v4-pro", "DeepSeek V4 Pro", [1.65, 4.95, 0.06], 921_600, 131_072, ["text"], MAX_HIGH_LOW),
+  model("cline-pass/deepseek-v4.1-flash", "DeepSeek V4.1 Flash", [0.3, 1.2, 0.006], 921_600, 131_072, ["text", "image"], MAX_HIGH_LOW),
+  model("cline-pass/mimo-v2.5", "MiMo-V2.5", [0.14, 0.28, 0.0028], 921_600, 131_072, ["text", "image"], ALL_THINKING),
+  model("cline-pass/mimo-v2.5-pro", "MiMo-V2.5-Pro", [0.435, 0.87, 0.0036], 921_600, 131_072, ["text"], ALL_THINKING),
+  model("cline-pass/minimax-m3", "MiniMax M3", [0.5, 2.0, 0.1], 921_600, 131_072, ["text", "image"], ALL_THINKING),
+  model("cline-pass/muse-spark-1.3-contributor", "Muse Spark 1.3 Contributor", [0.10, 0.20, 0.01], 921_600, 131_072, ["text", "image"], MANDATORY_NO_MAX),
+  model("cline-pass/qwen3.8-max", "Qwen3.8 Max", [2.75, 8.25, 0.34], 921_600, 131_072, ["text", "image"], XHIGH_MEDIUM_LOW),
+  model("cline-pass/qwen3.7-max", "Qwen3.7 Max", [4.17, 12.5, 0.83], 921_600, 131_072, ["text"], ALL_THINKING),
+  model("cline-pass/qwen3.7-plus", "Qwen3.7 Plus", [0.67, 2.67, 0.07], 921_600, 131_072, ["text", "image"], ALL_THINKING),
+];
+
+/** Cline free-tier models (rotating; no subscription required). */
+export const FREE_MODELS: readonly ClinePassModel[] = [
+  model("reflection/beam-free", "Beam 1.0 (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("cline-free/nemotron-3.5-super-vl", "Nemotron 3.5 Super VL (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("nvidia/nemotron-3.5-lightning-free", "Nemotron 3.5 Lightning (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+  model("cline-free/solar-mini4", "Solar Mini 4 (Free)", [0, 0, 0], 131_072, 32_768, ["text", "image"], FREE_THINKING),
+];
+
+export function modelIds(): string[] {
+  return MODELS.map((m) => m.id);
+}
+
+/** True for the Cline free-tier models — derived from the catalog itself
+ * (cost 0), so adding a free model never needs a second edit here. */
+export function isFreeModel(id: string): boolean {
+  const normalized = id.startsWith("clinepass/") ? id.slice(10) : id;
+  return (
+    MODELS.some((m) => m.id === normalized && m.cost.input === 0) ||
+    FREE_MODELS.some((m) => m.id === normalized)
+  );
+}
